@@ -8,7 +8,7 @@ try:
 except KeyError as e:
     exit("Error: FLICKR_API_KEY and/or FLICKR_API_SECRET not set in environment.")
 
-flickr = flickrapi.FlickrAPI(API_KEY, API_SECRET)
+flickr = flickrapi.FlickrAPI(API_KEY, API_SECRET, format='parsed-json')
 
 print('Step 1: authenticate')
 
