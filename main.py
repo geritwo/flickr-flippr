@@ -1,6 +1,9 @@
 import flickrapi
 import webbrowser
+import pprint
 import os
+
+USER_ID = '55142701@N00'
 
 try:
     API_KEY = os.environ['FLICKR_API_KEY']
@@ -32,8 +35,13 @@ if not flickr.token_valid(perms='read'):
 print('Step 2: use Flickr')
 
 # Demo functions
-resp = flickr.photos.getInfo(photo_id='7658567128')
-photos = flickr.photos.search(user_id='73509078@N00', per_page='10')
-sets = flickr.photosets.getList(user_id='73509078@N00')
+photos = flickr.people.getPhotos(user_id=USER_ID, perpage=5, extras='tags, '
+                                                                    'description, '
+                                                                    'original_format, '
+                                                                    'o_dims, '
+                                                                    'date_taken, '
+                                                                    'date_upload '
+                                                                    'geo')
+pages_total = photos['photos']['pages']
 
-print(sets)
+pprint.pprint(photos)
