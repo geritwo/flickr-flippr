@@ -35,13 +35,14 @@ if not flickr.token_valid(perms='read'):
 print('Step 2: use Flickr')
 
 # Demo functions
-photos = flickr.people.getPhotos(user_id=USER_ID, perpage=5, extras='tags, '
-                                                                    'description, '
-                                                                    'original_format, '
-                                                                    'o_dims, '
-                                                                    'date_taken, '
-                                                                    'date_upload '
+photos = flickr.people.getPhotos(user_id=USER_ID, extras='tags,'
+                                                                    'description,'
+                                                                    'original_format,'
+                                                                    'o_dims,'
+                                                                    'date_taken,'
+                                                                    'date_upload,'
                                                                     'geo')
 pages_total = photos['photos']['pages']
+photos_list = photos['photos']['photo']
 
-pprint.pprint(photos)
+pprint.pprint(photos_list)
