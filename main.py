@@ -59,11 +59,12 @@ conn = psycopg2.connect(host=DB_HOST, dbname=DB_NAME,
 
 cur = conn.cursor()
 
-cur.execute("CREATE TABLE test (id serial PRIMARY KEY, data VARCHAR);")
+cur.execute("CREATE TABLE IF NOT EXISTS test (id serial PRIMARY KEY, data VARCHAR);")
 
-#cur.execute(db_queries.init_db)
+cur.execute(db_queries.init_db)
 
-#cur.execute(insert_script, insert_values)
+for photo in photos_list:
+    cur.execute(db_queries.insert_script, db_queries.get_insert_values(photo))
 #cur.execute("SELECT title, date_taken FROM photopool")
 
 conn.commit()
