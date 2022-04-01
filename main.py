@@ -1,8 +1,11 @@
 import flickrapi
 import webbrowser
-import db_queries
+
+import psql_helper
+from psql_helper import *
 import os
 import psycopg2
+import pprint
 
 USER_ID = '55142701@N00'
 
@@ -61,10 +64,12 @@ cur = conn.cursor()
 
 cur.execute("CREATE TABLE IF NOT EXISTS test (id serial PRIMARY KEY, data VARCHAR);")
 
-cur.execute(db_queries.init_db)
+cur.execute(init_db)
 
 for photo in photos_list:
-    cur.execute(db_queries.insert_script, db_queries.get_insert_values(photo))
+    meta = psql_helper.get_insert_values(photo)
+    pprint(meta)
+    cur.execute(insert_script, meta)
 #cur.execute("SELECT title, date_taken FROM photopool")
 
 conn.commit()
