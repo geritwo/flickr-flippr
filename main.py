@@ -1,13 +1,19 @@
 import flickrapi
 import webbrowser
-import pprint
+import db_queries
 import os
+import psycopg2
 
 USER_ID = '55142701@N00'
+
+DB_HOST = 'localhost'
+DB_NAME = 'flickrflippr'
+DB_USER = 'postgres'
 
 try:
     API_KEY = os.environ['FLICKR_API_KEY']
     API_SECRET = os.environ['FLICKR_API_SECRET']
+    DB_PASSWORD = os.environ['DB_PASSWORD']
 except KeyError as e:
     exit("Error: FLICKR_API_KEY and/or FLICKR_API_SECRET not set in environment.")
 
@@ -36,13 +42,31 @@ print('Step 2: use Flickr')
 
 # Demo functions
 photos = flickr.people.getPhotos(user_id=USER_ID, extras='tags,'
-                                                                    'description,'
-                                                                    'original_format,'
-                                                                    'o_dims,'
-                                                                    'date_taken,'
-                                                                    'date_upload,'
-                                                                    'geo')
+                                                         'description,'
+                                                         'original_format,'
+                                                         'o_dims,'
+                                                         'date_taken,'
+                                                         'date_upload,'
+                                                         'geo')
+
 pages_total = photos['photos']['pages']
 photos_list = photos['photos']['photo']
 
-pprint.pprint(photos_list)
+print('Step 3: use PSQL')
+conn = psycopg2.connect(host=DB_HOST, dbname=DB_NAME,
+                        user=DB_USER, password=DB_PASSWORD,
+                        port=5432)
+
+cur = conn.cursor()
+
+cur.execute("CREATE TABLE test (id serial PRIMARY KEY, data VARCHAR);")
+
+#cur.execute(db_queries.init_db)
+
+#cur.execute(insert_script, insert_values)
+#cur.execute("SELECT title, date_taken FROM photopool")
+
+conn.commit()
+
+cur.close()
+conn.close()
