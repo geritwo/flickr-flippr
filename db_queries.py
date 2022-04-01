@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS photopool (
   img_id SERIAL PRIMARY KEY,
   title VARCHAR NOT NULL,
   description VARCHAR,
-  date_taken TIMESTAMP,
+  date_taken VARCHAR,
   date_upload INT,
   is_public INT NOT NULL,
   is_friend INT NOT NULL,
