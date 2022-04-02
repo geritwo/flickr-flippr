@@ -81,9 +81,9 @@ for photo in photos_list:
     #cur.execute(insert_script, meta_data)
     cur.execute("""
                 INSERT INTO photo_pool (title, date_taken)
-                VALUES (%s, %s);
+                VALUES (%(title)s, %(date_taken)s);
                  """,
-                (photo['title'], photo['datetaken']))
+                {'title': photo['title'], 'date_taken': photo['datetaken']})
     conn.commit()
 
 cur.close()
