@@ -1,24 +1,24 @@
-CREATE TABLE IF NOT EXISTS PhotoPool (
-  img_id SERIAL PRIMARY KEY,        -- AUTO_INCREMENT integer, as primary key
+CREATE TABLE IF NOT EXISTS photo_pool (
+  img_id SERIAL PRIMARY KEY,
   title VARCHAR NOT NULL,
   description VARCHAR,
-  date_taken TIMESTAMP,
+  date_taken VARCHAR,
   date_upload INT,
-  is_public INT NOT NULL,
-  is_friend INT NOT NULL,
-  is_family INT NOT NULL,
+  is_public INT,
+  is_friend INT,
+  is_family INT,
   tags VARCHAR,
   latitude INT,
   longitude INT,
-  original_format INT,
+  original_format VARCHAR,
   o_width INT,
   o_height INT,
-  secret INT,
-  original_secret INT,
-  server INT,
+  secret VARCHAR,
+  original_secret VARCHAR,
+  server VARCHAR,
   farm INT,
-  context INT
+  context_id INT
 );
 
-ALTER TABLE IF EXISTS public."PhotoPool"
+ALTER TABLE IF EXISTS public."photo_pool"
     OWNER to postgres;

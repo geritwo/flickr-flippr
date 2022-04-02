@@ -1,14 +1,14 @@
 
 init_db = """
-CREATE TABLE IF NOT EXISTS photopool (
+CREATE TABLE IF NOT EXISTS photo_pool (
   img_id SERIAL PRIMARY KEY,
   title VARCHAR NOT NULL,
   description VARCHAR,
   date_taken VARCHAR,
   date_upload INT,
-  is_public INT NOT NULL,
-  is_friend INT NOT NULL,
-  is_family INT NOT NULL,
+  is_public INT,
+  is_friend INT,
+  is_family INT,
   tags VARCHAR,
   latitude INT,
   longitude INT,
@@ -19,55 +19,28 @@ CREATE TABLE IF NOT EXISTS photopool (
   original_secret VARCHAR,
   server VARCHAR,
   farm INT,
-  context INT
+  context_id INT
 );
 """
 
-insert_script_bak = "INSERT INTO photopool (" \
-                "title, " \
-                "description, " \
-                "date_taken, " \
-                "date_upload, " \
-                "is_public, " \
-                "is_friend, " \
-                "is_family, " \
-                "tags, " \
-                "latitude,  " \
-                "longitude, " \
-                "original_format, " \
-                "o_width, " \
-                "o_height, " \
-                "secret, " \
-                "original_secret, " \
-                "server, " \
-                "farm, " \
-                "context)" \
-                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-
 insert_script = """
-INSERT INTO photopool (title, description, date_taken, date_upload,
+INSERT INTO photo_pool 
+    (title, description, 
+    date_taken, date_upload,
     is_public, is_friend, is_family, 
     tags,
     latitude, longitude,
     original_format, o_width, o_height,
     secret, original_secret,
     server, farm, context)
-VALUES (%s, %s, %s, %s,
+VALUES (%s, %s, 
+    %s, %s,
     %s,
     %s, %s,
     %s, %s, %s,
     %s, %s,
-    %s, %s, %s)
+    %s, %s, %s);
 """
 
 
-def get_insert_values(photo):
-    return (
-        photo['title'], photo['description']['_content'], photo['datetaken'], int(photo['dateupload']),
-        int(photo['ispublic']), int(photo['isfriend']), int(photo['isfamily']),
-        photo['tags'],
-        int(photo['latitude']), int(photo['longitude']),
-        photo['originalformat'], int(photo['o_width']), int(photo['o_height']),
-        photo['secret'], photo['originalsecret'],
-        photo['server'], int(photo['farm']), int(photo['context'])
-    )
+

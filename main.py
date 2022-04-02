@@ -1,7 +1,6 @@
 import flickrapi
 import webbrowser
 
-import psql_helper
 from psql_helper import *
 import os
 import psycopg2
@@ -65,14 +64,27 @@ cur = conn.cursor()
 cur.execute("CREATE TABLE IF NOT EXISTS test (id serial PRIMARY KEY, data VARCHAR);")
 
 cur.execute(init_db)
+conn.commit()
 
 for photo in photos_list:
-    meta = psql_helper.get_insert_values(photo)
-    pprint(meta)
-    cur.execute(insert_script, meta)
-#cur.execute("SELECT title, date_taken FROM photopool")
-
-conn.commit()
+    meta_data = (
+        photo['title'], photo['description']['_content'],
+        photo['datetaken'], int(photo['dateupload']),
+        int(photo['ispublic']), int(photo['isfriend']), int(photo['isfamily']),
+        photo['tags'],
+        int(photo['latitude']), int(photo['longitude']),
+        photo['originalformat'], int(photo['o_width']), int(photo['o_height']),
+        photo['secret'], photo['originalsecret'],
+        photo['server'], int(photo['farm']), int(photo['context']),
+    )
+    print(meta_data)
+    #cur.execute(insert_script, meta_data)
+    cur.execute("""
+                INSERT INTO photo_pool (title, date_taken)
+                VALUES (%s, %s);
+                 """,
+                (photo['title'], photo['datetaken']))
+    conn.commit()
 
 cur.close()
 conn.close()
