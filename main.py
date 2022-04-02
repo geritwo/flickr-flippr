@@ -67,23 +67,39 @@ cur.execute(init_db)
 conn.commit()
 
 for photo in photos_list:
-    meta_data = (
-        photo['title'], photo['description']['_content'],
-        photo['datetaken'], int(photo['dateupload']),
-        int(photo['ispublic']), int(photo['isfriend']), int(photo['isfamily']),
-        photo['tags'],
-        int(photo['latitude']), int(photo['longitude']),
-        photo['originalformat'], int(photo['o_width']), int(photo['o_height']),
-        photo['secret'], photo['originalsecret'],
-        photo['server'], int(photo['farm']), int(photo['context']),
-    )
-    print(meta_data)
-    #cur.execute(insert_script, meta_data)
     cur.execute("""
-                INSERT INTO photo_pool (title, date_taken)
-                VALUES (%(title)s, %(date_taken)s);
-                 """,
-                {'title': photo['title'], 'date_taken': photo['datetaken']})
+                INSERT INTO photo_pool (
+                    title, description, 
+                    date_taken, date_upload,
+                    is_public, is_friend, is_family, 
+                    tags,
+                    latitude, longitude,
+                    original_format, o_width, o_height,
+                    secret, original_secret,
+                    server, farm, context_id)
+                VALUES (
+                    %(title)s, %(description)s, 
+                    %(date_taken)s, %(date_upload)s,
+                    %(is_public)s, %(is_friend)s, %(is_family)s, 
+                    %(tags)s,
+                    %(latitude)s, %(longitude)s,
+                    %(original_format)s, %(o_width)s, %(o_height)s,
+                    %(secret)s, %(original_secret)s,
+                    %(server)s, %(farm)s, %(context_id)s
+                ); 
+                """,
+                {
+                    "title": photo['title'], "description": photo['description']['_content'],
+                    "date_taken": photo['datetaken'], "date_upload": int(photo['dateupload']),
+                    "is_public": int(photo['ispublic']), "is_friend": int(photo['isfriend']),
+                    "is_family": int(photo['isfamily']),
+                    "tags": photo['tags'],
+                    "latitude": int(photo['latitude']), "longitude": int(photo['longitude']),
+                    "original_format": photo['originalformat'],
+                    "o_width": int(photo['o_width']), "o_height": int(photo['o_height']),
+                    "secret": photo['secret'], "original_secret": photo['originalsecret'],
+                    "server": photo['server'], "farm": int(photo['farm']), "context_id": int(photo['context'])
+                })
     conn.commit()
 
 cur.close()

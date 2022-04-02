@@ -23,24 +23,6 @@ CREATE TABLE IF NOT EXISTS photo_pool (
 );
 """
 
-insert_script = """
-INSERT INTO photo_pool 
-    (title, description, 
-    date_taken, date_upload,
-    is_public, is_friend, is_family, 
-    tags,
-    latitude, longitude,
-    original_format, o_width, o_height,
-    secret, original_secret,
-    server, farm, context)
-VALUES (%s, %s, 
-    %s, %s,
-    %s,
-    %s, %s,
-    %s, %s, %s,
-    %s, %s,
-    %s, %s, %s);
-"""
 
 
 
