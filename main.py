@@ -6,8 +6,6 @@ import os
 import psycopg2
 import pprint
 
-USER_ID = '55142701@N00'
-
 DB_HOST = 'localhost'
 DB_NAME = 'flickrflippr'
 DB_USER = 'postgres'
@@ -16,6 +14,7 @@ try:
     API_KEY = os.environ['FLICKR_API_KEY']
     API_SECRET = os.environ['FLICKR_API_SECRET']
     DB_PASSWORD = os.environ['DB_PASSWORD']
+    FLICKR_USER_ID = os.environ['FLICKR_USER_ID']
 except KeyError as e:
     exit("Error: FLICKR_API_KEY and/or FLICKR_API_SECRET not set in environment.")
 
@@ -43,7 +42,7 @@ if not flickr.token_valid(perms='read'):
 print('Step 2: use Flickr')
 
 # Demo functions
-photos = flickr.people.getPhotos(user_id=USER_ID, extras='tags,'
+photos = flickr.people.getPhotos(user_id=FLICKR_USER_ID, extras='tags,'
                                                          'description,'
                                                          'original_format,'
                                                          'o_dims,'
