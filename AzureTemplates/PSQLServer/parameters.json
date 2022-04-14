@@ -1,0 +1,105 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "serverName": {
+            "value": "flickr-flippr-psql-server-flexible"
+        },
+        "location": {
+            "value": "eastus"
+        },
+        "serverEdition": {
+            "value": "Burstable"
+        },
+        "storageSizeGB": {
+            "value": 32
+        },
+        "haEnabled": {
+            "value": "Disabled"
+        },
+        "firewallRules": {
+            "value": {
+                "rules": []
+            }
+        },
+        "vnetData": {
+            "value": {
+                "isLoading": false,
+                "virtualNetworkName": "ImageDataMiner-vnet",
+                "virtualNetworkId": "/subscriptions/3e4e6bcd-e4cf-4f62-869b-71f2df00f001/resourceGroups/ImageDataMiner/providers/Microsoft.Network/virtualNetworks/ImageDataMiner-vnet",
+                "subnetName": "default",
+                "virtualNetworkSubscriptionName": "geritwo base",
+                "virtualNetworkAddressPrefix": "10.0.0.0/24",
+                "virtualNetworkResourceGroupName": "ImageDataMiner",
+                "location": "eastus",
+                "subscriptionId": "3e4e6bcd-e4cf-4f62-869b-71f2df00f001",
+                "subnetProperties": {
+                    "addressPrefix": "10.0.0.0/24",
+                    "delegations": [
+                        {
+                            "name": "dlg-Microsoft.DBforPostgreSQL-flexibleServers",
+                            "properties": {
+                                "serviceName": "Microsoft.DBforPostgreSQL/flexibleServers"
+                            }
+                        }
+                    ]
+                },
+                "subnetNeedsUpdate": false,
+                "isNewVnet": true,
+                "delegatedSubnetArguments": {
+                    "SubnetArmResourceId": "/subscriptions/3e4e6bcd-e4cf-4f62-869b-71f2df00f001/resourceGroups/ImageDataMiner/providers/Microsoft.Network/virtualNetworks/ImageDataMiner-vnet/subnets/default"
+                },
+                "usePrivateDnsZone": true,
+                "isNewPrivateDnsZone": true,
+                "privateDnsResourceGroup": "ImageDataMiner",
+                "privateDnsSubscriptionId": "3e4e6bcd-e4cf-4f62-869b-71f2df00f001",
+                "privateDnsZoneName": "flickr-flippr-psql-server-flexible.private.postgres.database.azure.com",
+                "privateDnsZoneSubscription": "geritwo base",
+                "privateDnsZoneArguments": {
+                    "PrivateDnsZoneArmResourceId": "/subscriptions/3e4e6bcd-e4cf-4f62-869b-71f2df00f001/resourceGroups/ImageDataMiner/providers/Microsoft.Network/privateDnsZones/flickr-flippr-psql-server-flexible.private.postgres.database.azure.com"
+                },
+                "linkVirtualNetwork": true,
+                "Network": {
+                    "DelegatedSubnetResourceId": "/subscriptions/3e4e6bcd-e4cf-4f62-869b-71f2df00f001/resourceGroups/ImageDataMiner/providers/Microsoft.Network/virtualNetworks/ImageDataMiner-vnet/subnets/default",
+                    "PrivateDnsZoneResourceId": "/subscriptions/3e4e6bcd-e4cf-4f62-869b-71f2df00f001/resourceGroups/ImageDataMiner/providers/Microsoft.Network/privateDnsZones/flickr-flippr-psql-server-flexible.private.postgres.database.azure.com",
+                    "PrivateDnsZoneArmResourceId": "/subscriptions/3e4e6bcd-e4cf-4f62-869b-71f2df00f001/resourceGroups/ImageDataMiner/providers/Microsoft.Network/privateDnsZones/flickr-flippr-psql-server-flexible.private.postgres.database.azure.com"
+                }
+            }
+        },
+        "backupRetentionDays": {
+            "value": 7
+        },
+        "geoRedundantBackup": {
+            "value": "Disabled"
+        },
+        "availabilityZone": {
+            "value": "1"
+        },
+        "vmName": {
+            "value": "Standard_B1ms"
+        },
+        "virtualNetworkDeploymentName": {
+            "value": "virtualNetwork_20220414T131142748Z"
+        },
+        "virtualNetworkLinkDeploymentName": {
+            "value": "virtualNetworkLink_20220414T131142748Z"
+        },
+        "privateDnsZoneDeploymentName": {
+            "value": "privateDnsZone_20220414T131142748Z"
+        },
+        "tags": {
+            "value": {
+                "AppName": "flickr-flippr"
+            }
+        },
+        "administratorLogin": {
+            "value": "geritwo"
+        },
+        "administratorLoginPassword": {
+            "value": null
+        },
+        "version": {
+            "value": "13"
+        }
+    }
+}
