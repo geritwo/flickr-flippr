@@ -4,7 +4,6 @@ import webbrowser
 from psql_helper import *
 import os
 import psycopg2
-import pprint
 
 DB_HOST = 'localhost'
 DB_NAME = 'flickrflippr'
