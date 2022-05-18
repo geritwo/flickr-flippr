@@ -1,0 +1,7 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"description": "Test pipeline to check workflows in IAC",
+		"annotations": []
+	}
+}
