@@ -116,6 +116,7 @@ def store_meta_in_db(connection, photos_list) -> None:
 
 
 if __name__ == '__main__':
-    flickr_reader = init_flickr()
+    flickr_reader = init_flickr(API_KEY, API_SECRET)
     photos_meta = get_photos_from_flickr(flickr_reader)
     #create_database()
+    print(photos_meta)
