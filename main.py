@@ -1,7 +1,6 @@
 import flickrapi
 import webbrowser
 
-from psql_helper import *
 import os
 import psycopg2
 
@@ -61,15 +60,39 @@ def get_photos_from_flickr(flickr):
     }
 
 
-def create_database(connection, database_name) -> None:
-    connection.cursor.execute(init_db)
+def create_database(connection) -> None:
+    cur = connection.cursor()
+    cur.execute("""
+        DROP TABLE IF EXISTS photo_pool;
+        CREATE TABLE photo_pool (
+        img_id            SERIAL PRIMARY KEY,
+        title             VARCHAR NOT NULL,
+        description       VARCHAR,
+        date_taken        VARCHAR,
+        date_upload       INT,
+        is_public         INT,
+        is_friend         INT,
+        is_family         INT,
+        tags              VARCHAR,
+        latitude          INT,
+        longitude         INT,
+        original_format   VARCHAR,
+        o_width           INT,
+        o_height          INT,
+        secret            VARCHAR,
+        original_secret   VARCHAR,
+        server            VARCHAR,
+        farm              INT,
+        context_id        INT
+    );
+    """)
     connection.commit()
-    connection.cursor.close()
 
 
 def store_meta_in_db(connection, photos_list) -> None:
+    cur = connection.cursor()
     for photo in photos_list:
-        connection.cursor.execute("""
+        cur.execute("""
                     INSERT INTO photo_pool (
                         title, description, 
                         date_taken, date_upload,
@@ -81,31 +104,19 @@ def store_meta_in_db(connection, photos_list) -> None:
                         server, farm, context_id)
                     VALUES (
                         %(title)s, %(description)s, 
-                        %(date_taken)s, %(date_upload)s,
-                        %(is_public)s, %(is_friend)s, %(is_family)s, 
+                        %(datetaken)s, %(dateupload)s,
+                        %(ispublic)s, %(isfriend)s, %(isfamily)s, 
                         %(tags)s,
                         %(latitude)s, %(longitude)s,
-                        %(original_format)s, %(o_width)s, %(o_height)s,
-                        %(secret)s, %(original_secret)s,
-                        %(server)s, %(farm)s, %(context_id)s
+                        %(originalformat)s, %(o_width)s, %(o_height)s,
+                        %(secret)s, %(originalsecret)s,
+                        %(server)s, %(farm)s, %(context)s
                     ); 
-                    """,
-                    {
-                        "title": photo['title'], "description": photo['description']['_content'],
-                        "date_taken": photo['datetaken'], "date_upload": int(photo['dateupload']),
-                        "is_public": int(photo['ispublic']), "is_friend": int(photo['isfriend']),
-                        "is_family": int(photo['isfamily']),
-                        "tags": photo['tags'],
-                        "latitude": int(photo['latitude']), "longitude": int(photo['longitude']),
-                        "original_format": photo['originalformat'],
-                        "o_width": int(photo['o_width']), "o_height": int(photo['o_height']),
-                        "secret": photo['secret'], "original_secret": photo['originalsecret'],
-                        "server": photo['server'], "farm": int(photo['farm']), "context_id": int(photo['context'])
-                    })
+                """, {
+                        **photo,
+                        "description": photo['description']['_content']
+                })
         connection.commit()
-
-    connection.cursor.close()
-    connection.close()
 
 
 if __name__ == '__main__':
@@ -114,5 +125,5 @@ if __name__ == '__main__':
                             port=5432)
     flickr_reader = init_flickr(API_KEY, API_SECRET)
     photos_meta = get_photos_from_flickr(flickr_reader)
-    #create_database()
-    print(photos_meta)
+    create_database(conn)
+    store_meta_in_db(conn, photos_meta['PhotosList'])
