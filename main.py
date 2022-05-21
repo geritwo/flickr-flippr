@@ -18,8 +18,8 @@ except KeyError as e:
     exit("Error: FLICKR_API_KEY and/or FLICKR_API_SECRET not set in environment.")
 
 
-def init_flickr(API_KEY, API_SECRET) -> object:
-    flickr = flickrapi.FlickrAPI(API_KEY, API_SECRET, format='parsed-json')
+def init_flickr(api_key, api_secret) -> object:
+    flickr = flickrapi.FlickrAPI(api_key, api_secret, format='parsed-json')
 
     print('Step 1: authenticate')
 
@@ -61,22 +61,15 @@ def get_photos_from_flickr(flickr):
     }
 
 
-print('Step 3: use PSQL')
-conn = psycopg2.connect(host=DB_HOST, dbname=DB_NAME,
-                        user=DB_USER, password=DB_PASSWORD,
-                        port=5432)
-
-
 def create_database(connection, database_name) -> None:
-    cur = connection.cursor()
-    cur.execute("CREATE TABLE IF NOT EXISTS test (id serial PRIMARY KEY, data VARCHAR);")
-    cur.execute(init_db)
-    conn.commit()
+    connection.cursor.execute(init_db)
+    connection.commit()
+    connection.cursor.close()
 
 
 def store_meta_in_db(connection, photos_list) -> None:
     for photo in photos_list:
-        connection.cur.execute("""
+        connection.cursor.execute("""
                     INSERT INTO photo_pool (
                         title, description, 
                         date_taken, date_upload,
@@ -111,11 +104,14 @@ def store_meta_in_db(connection, photos_list) -> None:
                     })
         connection.commit()
 
-    connection.cur.close()
+    connection.cursor.close()
     connection.close()
 
 
 if __name__ == '__main__':
+    conn = psycopg2.connect(host=DB_HOST, dbname=DB_NAME,
+                            user=DB_USER, password=DB_PASSWORD,
+                            port=5432)
     flickr_reader = init_flickr(API_KEY, API_SECRET)
     photos_meta = get_photos_from_flickr(flickr_reader)
     #create_database()
