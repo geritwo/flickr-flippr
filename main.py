@@ -42,20 +42,20 @@ def init_flickr(api_key, api_secret) -> object:
     return flickr
 
 
-def get_photos_from_flickr(flickr):
-    print('Step 2: use Flickr')
-
-    # Demo functions
-    photos = flickr.people.getPhotos(user_id=FLICKR_USER_ID, extras='tags,'
-                                                                    'description,'
-                                                                    'original_format,'
-                                                                    'o_dims,'
-                                                                    'date_taken,'
-                                                                    'date_upload,'
-                                                                    'geo')
+def get_photos_from_flickr(flickr, page) -> object:
+    photos = flickr.people.getPhotos(user_id=FLICKR_USER_ID,
+                                     page=page,
+                                     extras='tags,'
+                                            'description,'
+                                            'original_format,'
+                                            'o_dims,'
+                                            'date_taken,'
+                                            'date_upload,'
+                                            'geo')
 
     return {
         'TotalPages': photos['photos']['pages'],
+        'CurrentPage': photos['photos']['page'],
         'PhotosList': photos['photos']['photo']
     }
 
@@ -74,8 +74,8 @@ def create_database(connection) -> None:
         is_friend         INT,
         is_family         INT,
         tags              VARCHAR,
-        latitude          INT,
-        longitude         INT,
+        latitude          FLOAT,
+        longitude         FLOAT,
         original_format   VARCHAR,
         o_width           INT,
         o_height          INT,
@@ -124,6 +124,13 @@ if __name__ == '__main__':
                             user=DB_USER, password=DB_PASSWORD,
                             port=5432)
     flickr_reader = init_flickr(API_KEY, API_SECRET)
-    photos_meta = get_photos_from_flickr(flickr_reader)
     create_database(conn)
-    store_meta_in_db(conn, photos_meta['PhotosList'])
+    current_page = 1
+    while True:
+        photos_meta = get_photos_from_flickr(flickr_reader, current_page)
+        print(f"Getting photos meta from page {photos_meta['CurrentPage']}...")
+        store_meta_in_db(conn, photos_meta['PhotosList'])
+        print("Metadata stored.")
+        current_page += 1
+        if current_page > photos_meta['TotalPages']:
+            break
