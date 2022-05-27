@@ -51,7 +51,11 @@ def get_photos_from_flickr(flickr, page) -> object:
                                             'o_dims,'
                                             'date_taken,'
                                             'date_upload,'
-                                            'geo')
+                                            'geo,'
+                                            'url_t,'
+                                            'url_m,'
+                                            'url_o'
+                                     )
 
     return {
         'TotalPages': photos['photos']['pages'],
@@ -83,7 +87,10 @@ def create_database(connection) -> None:
         original_secret   VARCHAR,
         server            VARCHAR,
         farm              INT,
-        context_id        INT
+        context_id        INT,
+        url_thumb         VARCHAR,
+        url_preview       VARCHAR,
+        url_original      VARCHAR
     );
     """)
     connection.commit()
@@ -101,7 +108,8 @@ def store_meta_in_db(connection, photos_list) -> None:
                         latitude, longitude,
                         original_format, o_width, o_height,
                         secret, original_secret,
-                        server, farm, context_id)
+                        server, farm, context_id,
+                        url_thumb, url_preview, url_original)
                     VALUES (
                         %(title)s, %(description)s, 
                         %(datetaken)s, %(dateupload)s,
@@ -110,13 +118,27 @@ def store_meta_in_db(connection, photos_list) -> None:
                         %(latitude)s, %(longitude)s,
                         %(originalformat)s, %(o_width)s, %(o_height)s,
                         %(secret)s, %(originalsecret)s,
-                        %(server)s, %(farm)s, %(context)s
+                        %(server)s, %(farm)s, %(context)s,
+                        %(url_t)s, %(url_m)s, %(url_o)s
                     ); 
                 """, {
                         **photo,
-                        "description": photo['description']['_content']
+                        "description": photo['description']['_content'],
+                        "url_m": photo['url_m'] if 'url_m' in list(photo.keys()) else ""
                 })
         connection.commit()
+
+
+def store_all_photos(connection):
+    current_page = 1
+    while True:
+        photos_meta = get_photos_from_flickr(flickr_reader, current_page)
+        print(f"Getting photos meta from page {photos_meta['CurrentPage']}...")
+        store_meta_in_db(connection, photos_meta['PhotosList'])
+        print("Metadata stored.")
+        current_page += 1
+        if current_page > photos_meta['TotalPages']:
+            break
 
 
 if __name__ == '__main__':
@@ -125,12 +147,4 @@ if __name__ == '__main__':
                             port=5432)
     flickr_reader = init_flickr(API_KEY, API_SECRET)
     create_database(conn)
-    current_page = 1
-    while True:
-        photos_meta = get_photos_from_flickr(flickr_reader, current_page)
-        print(f"Getting photos meta from page {photos_meta['CurrentPage']}...")
-        store_meta_in_db(conn, photos_meta['PhotosList'])
-        print("Metadata stored.")
-        current_page += 1
-        if current_page > photos_meta['TotalPages']:
-            break
+    store_all_photos(conn)
