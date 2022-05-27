@@ -1,5 +1,6 @@
 import flickrapi
 import webbrowser
+import logging
 
 import os
 import psycopg2
@@ -24,19 +25,12 @@ def init_flickr(api_key, api_secret) -> object:
 
     # Only do this if we don't have a valid token already
     if not flickr.token_valid(perms='read'):
-        # Get a request token
         flickr.get_request_token(oauth_callback='oob')
 
-        # Open a browser at the authentication URL. Do this however
-        # you want, as long as the user visits that URL.
         authorize_url = flickr.auth_url(perms='read')
         webbrowser.open_new_tab(authorize_url)
 
-        # Get the verifier code from the user. Do this however you
-        # want, as long as the user gives the application the code.
         verifier = str(input('Verifier code: '))
-
-        # Trade the request token for an access token
         flickr.get_access_token(verifier)
 
     return flickr
@@ -129,22 +123,31 @@ def store_meta_in_db(connection, photos_list) -> None:
         connection.commit()
 
 
-def store_all_photos(connection):
+def store_all_photos(connection, flickr_reader):
     current_page = 1
     while True:
         photos_meta = get_photos_from_flickr(flickr_reader, current_page)
-        print(f"Getting photos meta from page {photos_meta['CurrentPage']}...")
+        logging.info(f"Getting photos meta from page {photos_meta['CurrentPage']}...")
         store_meta_in_db(connection, photos_meta['PhotosList'])
-        print("Metadata stored.")
         current_page += 1
         if current_page > photos_meta['TotalPages']:
             break
 
 
 if __name__ == '__main__':
+    logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y/%m/%d %H:%M:%S', level=logging.INFO)
+
     conn = psycopg2.connect(host=DB_HOST, dbname=DB_NAME,
                             user=DB_USER, password=DB_PASSWORD,
                             port=5432)
+    logging.info("Established DB connection")
+
     flickr_reader = init_flickr(API_KEY, API_SECRET)
+    logging.info("Intialized access to Flickr")
+
     create_database(conn)
-    store_all_photos(conn)
+    logging.info("Recreated Database")
+    logging.info("Begin requesting and storing metadata")
+    store_all_photos(conn, flickr_reader)
+
+    logging.info("Done.")
