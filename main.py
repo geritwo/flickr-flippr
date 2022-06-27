@@ -2,6 +2,10 @@ import flickrapi
 import webbrowser
 import logging
 
+import pandas
+import pandas as pd
+import json
+
 import os
 import psycopg2
 
@@ -123,6 +127,28 @@ def store_meta_in_db(connection, photos_list) -> None:
         connection.commit()
 
 
+def pandas_all_photos(flickr_reader):
+    logging.info("Getting photos metadata into DataFrame")
+    current_page = 1
+    df = pd.DataFrame()
+    while True:
+        photos_meta = get_photos_from_flickr(flickr_reader, current_page)
+        logging.info(f"Getting photos meta from page {photos_meta['CurrentPage']}...")
+        photos_json = photos_meta['PhotosList']
+        for photo in photos_json:
+            photo_meta = {
+                            **photo,
+                            "description": photo['description']['_content'],
+                            "url_m": photo['url_m'] if 'url_m' in list(photo.keys()) else ""
+                          }
+            into_df = pd.json_normalize(photo_meta)
+            df = df.append(into_df)
+        current_page += 1
+        if current_page > 3:  #photos_meta['TotalPages']:
+            break
+    return df
+
+
 def store_all_photos(connection, flickr_reader):
     current_page = 1
     while True:
@@ -134,6 +160,12 @@ def store_all_photos(connection, flickr_reader):
             break
 
 
+def create_parquet(connection):
+    query = "SELECT * FROM photo_pool;"
+    df = pd.read_sql(query, connection)
+    df.to_parquet('PhotoPoolParquet.gzip', compression='gzip')
+
+
 if __name__ == '__main__':
     logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y/%m/%d %H:%M:%S', level=logging.INFO)
 
@@ -143,11 +175,12 @@ if __name__ == '__main__':
     logging.info("Established DB connection")
 
     flickr_reader = init_flickr(API_KEY, API_SECRET)
-    logging.info("Intialized access to Flickr")
+    #logging.info("Intialized access to Flickr")
 
-    create_database(conn)
-    logging.info("Recreated Database")
-    logging.info("Begin requesting and storing metadata")
-    store_all_photos(conn, flickr_reader)
+    #create_database(conn)
+    #logging.info("Recreated Database")
+    #logging.info("Begin requesting and storing metadata")
+    #store_all_photos(conn, flickr_reader)
+    df = pandas_all_photos(flickr_reader)
 
     logging.info("Done.")
