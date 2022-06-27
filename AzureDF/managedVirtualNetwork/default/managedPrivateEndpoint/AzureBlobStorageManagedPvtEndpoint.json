@@ -1,0 +1,7 @@
+{
+	"name": "AzureBlobStorageManagedPvtEndpoint",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/3e4e6bcd-e4cf-4f62-869b-71f2df00f001/resourceGroups/ImageDataMiner/providers/Microsoft.Storage/storageAccounts/flickrflipprblob",
+		"groupId": "blob"
+	}
+}
