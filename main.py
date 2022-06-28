@@ -130,6 +130,7 @@ def store_meta_in_db(connection, photos_list) -> None:
 
 
 def pandas_all_photos(flickr_reader):
+    """Problematic because of format conversions."""
     logging.info("Getting photos metadata into DataFrame")
     current_page = 1
     df = pd.DataFrame()
