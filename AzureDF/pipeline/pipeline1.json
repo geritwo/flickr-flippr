@@ -4,7 +4,7 @@
 		"description": "Test pipeline to check workflows in IAC",
 		"activities": [
 			{
-				"name": "Import from Blob",
+				"name": "Ingest Parquet from Blob Storage",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -17,20 +17,17 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "DelimitedTextSource",
+						"type": "ParquetSource",
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
 							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
 						}
 					},
 					"sink": {
 						"type": "DelimitedTextSink",
 						"storeSettings": {
-							"type": "AzureFileStorageWriteSettings"
+							"type": "AzureBlobStorageWriteSettings"
 						},
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
@@ -41,6 +38,272 @@
 					"enableStaging": false,
 					"translator": {
 						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "img_id",
+									"type": "Int64",
+									"physicalType": "INT64"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 1
+								}
+							},
+							{
+								"source": {
+									"name": "title",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 2
+								}
+							},
+							{
+								"source": {
+									"name": "description",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 3
+								}
+							},
+							{
+								"source": {
+									"name": "date_taken",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 4
+								}
+							},
+							{
+								"source": {
+									"name": "date_upload",
+									"type": "Int64",
+									"physicalType": "INT64"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 5
+								}
+							},
+							{
+								"source": {
+									"name": "is_public",
+									"type": "Int64",
+									"physicalType": "INT64"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 6
+								}
+							},
+							{
+								"source": {
+									"name": "is_friend",
+									"type": "Int64",
+									"physicalType": "INT64"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 7
+								}
+							},
+							{
+								"source": {
+									"name": "is_family",
+									"type": "Int64",
+									"physicalType": "INT64"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 8
+								}
+							},
+							{
+								"source": {
+									"name": "tags",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 9
+								}
+							},
+							{
+								"source": {
+									"name": "latitude",
+									"type": "Double",
+									"physicalType": "DOUBLE"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 10
+								}
+							},
+							{
+								"source": {
+									"name": "longitude",
+									"type": "Double",
+									"physicalType": "DOUBLE"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 11
+								}
+							},
+							{
+								"source": {
+									"name": "original_format",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 12
+								}
+							},
+							{
+								"source": {
+									"name": "o_width",
+									"type": "Int64",
+									"physicalType": "INT64"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 13
+								}
+							},
+							{
+								"source": {
+									"name": "o_height",
+									"type": "Int64",
+									"physicalType": "INT64"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 14
+								}
+							},
+							{
+								"source": {
+									"name": "secret",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 15
+								}
+							},
+							{
+								"source": {
+									"name": "original_secret",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 16
+								}
+							},
+							{
+								"source": {
+									"name": "server",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 17
+								}
+							},
+							{
+								"source": {
+									"name": "farm",
+									"type": "Int64",
+									"physicalType": "INT64"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 18
+								}
+							},
+							{
+								"source": {
+									"name": "context_id",
+									"type": "Int64",
+									"physicalType": "INT64"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 19
+								}
+							},
+							{
+								"source": {
+									"name": "url_thumb",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 20
+								}
+							},
+							{
+								"source": {
+									"name": "url_preview",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 21
+								}
+							},
+							{
+								"source": {
+									"name": "url_original",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 22
+								}
+							}
+						],
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
@@ -50,13 +313,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "SupposedlySQL",
+						"referenceName": "Parquet1",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "SQLcopied",
+						"referenceName": "DelimitedText1",
 						"type": "DatasetReference"
 					}
 				]

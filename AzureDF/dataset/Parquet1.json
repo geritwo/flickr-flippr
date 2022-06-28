@@ -1,0 +1,109 @@
+{
+	"name": "Parquet1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FlickrFlipprBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "PhotoPoolParquet.gzip",
+				"container": "flickrflippr"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "img_id",
+				"type": "INT64"
+			},
+			{
+				"name": "title",
+				"type": "UTF8"
+			},
+			{
+				"name": "description",
+				"type": "UTF8"
+			},
+			{
+				"name": "date_taken",
+				"type": "UTF8"
+			},
+			{
+				"name": "date_upload",
+				"type": "INT64"
+			},
+			{
+				"name": "is_public",
+				"type": "INT64"
+			},
+			{
+				"name": "is_friend",
+				"type": "INT64"
+			},
+			{
+				"name": "is_family",
+				"type": "INT64"
+			},
+			{
+				"name": "tags",
+				"type": "UTF8"
+			},
+			{
+				"name": "latitude",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "longitude",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "original_format",
+				"type": "UTF8"
+			},
+			{
+				"name": "o_width",
+				"type": "INT64"
+			},
+			{
+				"name": "o_height",
+				"type": "INT64"
+			},
+			{
+				"name": "secret",
+				"type": "UTF8"
+			},
+			{
+				"name": "original_secret",
+				"type": "UTF8"
+			},
+			{
+				"name": "server",
+				"type": "UTF8"
+			},
+			{
+				"name": "farm",
+				"type": "INT64"
+			},
+			{
+				"name": "context_id",
+				"type": "INT64"
+			},
+			{
+				"name": "url_thumb",
+				"type": "UTF8"
+			},
+			{
+				"name": "url_preview",
+				"type": "UTF8"
+			},
+			{
+				"name": "url_original",
+				"type": "UTF8"
+			}
+		]
+	}
+}
