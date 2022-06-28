@@ -3,6 +3,8 @@ import webbrowser
 import logging
 
 import pandas
+import pandas.io.sql as psql
+import fastparquet
 import pandas as pd
 import json
 
@@ -144,8 +146,14 @@ def pandas_all_photos(flickr_reader):
             into_df = pd.json_normalize(photo_meta)
             df = df.append(into_df)
         current_page += 1
-        if current_page > 3:  #photos_meta['TotalPages']:
-            break
+        #if current_page > photos_meta['TotalPages']:
+        #    break
+        break
+    return df
+
+
+def dataframe_from_psql(connection):
+    df = psql.read_sql('SELECT * FROM photo_pool', connection)
     return df
 
 
@@ -160,10 +168,8 @@ def store_all_photos(connection, flickr_reader):
             break
 
 
-def create_parquet(connection):
-    query = "SELECT * FROM photo_pool;"
-    df = pd.read_sql(query, connection)
-    df.to_parquet('PhotoPoolParquet.gzip', compression='gzip')
+def create_parquet(dataframe, filename):
+    dataframe.to_parquet(filename, compression='gzip')
 
 
 if __name__ == '__main__':
@@ -174,13 +180,18 @@ if __name__ == '__main__':
                             port=5432)
     logging.info("Established DB connection")
 
-    flickr_reader = init_flickr(API_KEY, API_SECRET)
-    #logging.info("Intialized access to Flickr")
+    # Access to Flickr API
+    #flickr_reader = init_flickr(API_KEY, API_SECRET)
+    logging.info("Intialised access to Flickr")
 
+    # Recreate database
     #create_database(conn)
     #logging.info("Recreated Database")
     #logging.info("Begin requesting and storing metadata")
     #store_all_photos(conn, flickr_reader)
-    df = pandas_all_photos(flickr_reader)
+
+    # Create Pandas Dataframe from database
+    df = dataframe_from_psql(conn)
+    create_parquet(df, "PhotoPoolParquet.gzip")
 
     logging.info("Done.")
