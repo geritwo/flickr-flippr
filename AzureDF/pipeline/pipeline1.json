@@ -4,7 +4,7 @@
 		"description": "Test pipeline to check workflows in IAC",
 		"activities": [
 			{
-				"name": "Ingest Parquet from Blob Storage",
+				"name": "IngestParquetFromBlob",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
